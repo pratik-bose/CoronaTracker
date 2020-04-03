@@ -9,5 +9,5 @@ requests==2.23.0
 lxml==4.5.0
 datetime==4.3.0
 folium==0.10.1
-json==0.1.0
+jsonschema==2.6.0
 time==1.0.0
