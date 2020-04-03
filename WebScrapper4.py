@@ -6,7 +6,7 @@ Created on Sat Mar 21 15:50:43 2020
 """
 
 import sys
-sys.path.insert(1,'D:\PythonPackages')
+#sys.path.insert(1,'D:\PythonPackages')
 
 import requests
 import lxml.html as lh
@@ -20,7 +20,7 @@ import json
 from folium.plugins import MarkerCluster
 import time
 #from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-data_path = "D:\PythonPractice\WebScrapper\\"
+data_path = "https://github.com/pratik-bose/CoronaTracker/"
 #url = 'https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/India_medical_cases'
 url = 'https://www.mohfw.gov.in/'
 
