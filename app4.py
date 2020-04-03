@@ -11,7 +11,7 @@ This is a temporary script file.
 #os.getcwd()
 #os.path
 import sys
-sys.path.insert(1,'D:\PythonPackages')
+#sys.path.insert(1,'D:\PythonPackages')
 #sys.path.insert(2,'D:\PythonPractice\WebScrapper')
 #print(sys.path)
 
@@ -32,7 +32,7 @@ import numpy as np
 
 
 # data path
-data_path = "D:\PythonPractice\WebScrapper\\"
+data_path = "https://github.com/pratik-bose/CoronaTracker/"
 # external JavaScript files
 external_scripts = [
     'https://www.google-analytics.com/analytics.js',
