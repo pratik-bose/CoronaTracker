@@ -10,3 +10,4 @@ lxml==4.5.0
 datetime==4.3.0
 folium==0.10.1
 jsonschema==2.6.0
+gunicorn==20.0.4
