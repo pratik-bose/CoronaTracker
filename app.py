@@ -32,7 +32,7 @@ import numpy as np
 
 
 # data path
-data_path = "https://github.com/pratik-bose/CoronaTracker/"
+data_path = "https://raw.githubusercontent.com/pratik-bose/CoronaTracker/V1/"
 # external JavaScript files
 external_scripts = [
     'https://www.google-analytics.com/analytics.js',
