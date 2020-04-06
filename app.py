@@ -10,7 +10,7 @@ This is a temporary script file.
 #import os
 #os.getcwd()
 #os.path
-import sys
+#import sys
 #sys.path.insert(1,'D:\PythonPackages')
 #sys.path.insert(2,'D:\PythonPractice\WebScrapper')
 #print(sys.path)
@@ -25,6 +25,12 @@ import pandas as pd
 from plotly.subplots import make_subplots
 from dash.dependencies import Input, Output
 import numpy as np
+import io
+import simplejson
+import requests
+import folium
+from folium.plugins import MarkerCluster
+
 #import time
 #from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 #os.system("WebScrapper.py 1")
@@ -32,8 +38,7 @@ import numpy as np
 
 
 # data path
-#data_path = "https://raw.github    usercontent.com/pratik-bose/CoronaTracker/V1/"
-data_path = "https://api.github.com/repos/pratik-bose/CoronaTracker/V1/contents/"
+data_path = 'https://raw.githubusercontent.com/pratik-bose/CoronaTracker/V1/'
 # external JavaScript files
 external_scripts = [
     'https://www.google-analytics.com/analytics.js',
@@ -77,13 +82,102 @@ tab_selected_style = {
     'padding': '12px'
 }
 
+#Load India data
+#Import Lat Long
+s = requests.get(str(data_path)+ 'GeoData.csv').content
+LLi = pd.read_csv(io.StringIO(s.decode('utf-8')))
+#Import GeoJson file
+IJ = requests.get(str(data_path)+ 'Ind_geo.txt').content
+JSi = simplejson.loads(IJ)
+#Load World data
+#Import Lat Long
+s = requests.get(str(data_path)+ 'CountryLL.csv').content
+LLw = pd.read_csv(io.StringIO(s.decode('utf-8')))
+#Import GeoJson file
+IJ = requests.get(str(data_path)+ 'world-countries.json').content
+JSw = simplejson.loads(IJ)
 
-def serve_layout():
+########### Map Plot ################
+def CreateMapPlot(data, ll, js, var):
+    df = data[data.Date == max(mdt.Date)]    
+    df = pd.merge(df, ll, on='Name_1', how='left')
+    
+    for i in range(0,len(df)):
+        df.loc[i,'StateInfo'] = df.loc[i,'Name_1'] \
+            + ', '+var+' :' + str('{:,.0f}'.format(df.loc[i,var]))
+
+    df1 = df[df[var]>0]
+    # Initialize the map:
+    m = folium.Map(location=[20.5937,78.9629], tiles="OpenStreetMap", zoom_start=4)
+
+    m.choropleth(
+     geo_data=js,
+     name='choropleth',
+     data=df1,
+     columns=['Name_2',var],
+     key_on= "feature.properties.NAME_1",
+     fill_color='OrRd',
+     fill_opacity=0.7,
+     line_opacity=0.2,
+     legend_name=var,
+     highlight = True
+    )
+    marker_cluster = MarkerCluster().add_to(m)
+    
+    df1 = df1[df1['Latitude'].notna()]
+    for i in range(0,len(df1)):
+        folium.Marker(
+                  location=[df1.iloc[i]['Latitude'], df1.iloc[i]['Longitude']],
+                  popup=df1.iloc[i]['StateInfo']
+               ).add_to(marker_cluster)
+
+    folium.LayerControl().add_to(m)
+    print("Plot Created")
+    return(m._repr_html_())
+
+########### Total Plot ################
+def totalplot(mdt,id):
+    if id == 1:
+        contname = 'india_plot_container'
+    elif id == 2:
+        contname = 'world_plot_container'
+    
+    dff = mdt.groupby(['Date']).agg({  'TotalCases' :sum,
+                                       'NewCases': sum,
+                                       'ActiveCases': sum,
+                                       'Recovered':sum,
+                                       'Death':sum
+                                   })
+    
+    dt = pd.DataFrame(sorted(mdt.Date.unique()),columns = ['Date'])
+    dff = pd.merge(dt, dff, on='Date', how='left')
+    dff = dff.replace(np.nan,0)
+    
+    fig = make_subplots(rows=5, cols=1, shared_xaxes=True,
+                            vertical_spacing=0.1,horizontal_spacing=0.1)
+    fig.append_trace({'x':dff.Date,'y':dff.TotalCases,'type':'bar',"marker": {"color": "#007bff"},'name':'Total Cases'},1,1)
+    fig.append_trace({'x':dff.Date,'y':dff.NewCases,'type':'bar',"marker": {"color": "#ffc107"},'name':'New Cases'},2,1)
+    fig.append_trace({'x':dff.Date,'y':dff.ActiveCases,'type':'bar',"marker": {"color": "#17a2b8"},'name':'Active Cases'},3,1)
+    fig.append_trace({'x':dff.Date,'y':dff.Recovered,'type':'bar',"marker": {"color": "#28a745"},'name':'Total Recovered'},4,1)
+    fig.append_trace({'x':dff.Date,'y':dff.Death,'type':'bar',"marker": {"color": "#dc3545"},'name':'Total Death'},5,1)
+    #fig.update_layout(legend_orientation="h",legend = dict(x=0.5, y=1.2),margin=dict(t=5,l=0,r=5))
+    
+    fig.update_layout(showlegend=False,margin=dict(t=0,l=0,r=5,b=0,pad=4),width=290,height=400)
+    return html.Div(dcc.Graph(id=contname,figure = fig,config = {'displayModeBar': False}))
+
+
+def create_layout():
 #from WebScrapper3 import DtaScrapper
     global Wdt, mdt
     
-    Wdt = pd.read_csv(str(data_path) + 'WorldCoronaData.csv')
-    mdt = pd.read_csv(str(data_path) + 'CoronaData.csv')
+    #Load Data
+    data_path = 'https://raw.githubusercontent.com/pratik-bose/CoronaTracker/V1/'
+    # Load base data India
+    s = requests.get(str(data_path)+ 'CoronaData.csv').content
+    mdt = pd.read_csv(io.StringIO(s.decode('utf-8')))
+    # Load base data World
+    s = requests.get(str(data_path)+ 'WorldCoronaData.csv').content
+    Wdt = pd.read_csv(io.StringIO(s.decode('utf-8')))
     print('Data load complete..')
     
     TC1 = sum(mdt.loc[mdt.Date==max(mdt.Date),'TotalCases'])
@@ -109,37 +203,6 @@ def serve_layout():
     WDT = '{:,.0f}'.format(WDT)+" ("+str(round((WDT/WTC1)*100,2))+"%)"
     WTM = max(Wdt.loc[Wdt.Date==max(Wdt.Date),'Time'])
     WDT_TM = str(max(Wdt.Date)+':'+WTM)
-
-########### Total Plot ################
-    def totalplot(mdt,id):
-        if id == 1:
-            contname = 'india_plot_container'
-        elif id == 2:
-            contname = 'world_plot_container'
-        
-        dff = mdt.groupby(['Date']).agg({  'TotalCases' :sum,
-                                           'NewCases': sum,
-                                           'ActiveCases': sum,
-                                           'Recovered':sum,
-                                           'Death':sum
-                                       })
-        
-        dt = pd.DataFrame(sorted(mdt.Date.unique()),columns = ['Date'])
-        dff = pd.merge(dt, dff, on='Date', how='left')
-        dff = dff.replace(np.nan,0)
-        
-        fig = make_subplots(rows=5, cols=1, shared_xaxes=True,
-                                vertical_spacing=0.1,horizontal_spacing=0.1)
-        fig.append_trace({'x':dff.Date,'y':dff.TotalCases,'type':'bar',"marker": {"color": "#007bff"},'name':'Total Cases'},1,1)
-        fig.append_trace({'x':dff.Date,'y':dff.NewCases,'type':'bar',"marker": {"color": "#ffc107"},'name':'New Cases'},2,1)
-        fig.append_trace({'x':dff.Date,'y':dff.ActiveCases,'type':'bar',"marker": {"color": "#17a2b8"},'name':'Active Cases'},3,1)
-        fig.append_trace({'x':dff.Date,'y':dff.Recovered,'type':'bar',"marker": {"color": "#28a745"},'name':'Total Recovered'},4,1)
-        fig.append_trace({'x':dff.Date,'y':dff.Death,'type':'bar',"marker": {"color": "#dc3545"},'name':'Total Death'},5,1)
-        #fig.update_layout(legend_orientation="h",legend = dict(x=0.5, y=1.2),margin=dict(t=5,l=0,r=5))
-        
-        fig.update_layout(showlegend=False,margin=dict(t=0,l=0,r=5,b=0,pad=4),width=290,height=400)
-        return html.Div(dcc.Graph(id=contname,figure = fig,config = {'displayModeBar': False}))
-
 
 
     height = 400
@@ -201,7 +264,7 @@ def serve_layout():
         #Main Body
         ,html.Div([
         #Main Tabs
-        dbc.Tabs(id="tabs",# value='TabIndia',
+        dbc.Tabs(id="tabs", #value='World',
                  children=[
                     dbc.Tab(label='India',labelClassName="text-success",tabClassName="ml-auto",
                             children = [
@@ -253,26 +316,26 @@ def serve_layout():
                                                             dbc.CardBody([
                                                                     dcc.Tabs(id = "MainTab",value = "tab1",children=[
                                                                             dcc.Tab(label = "Confirmed Case",value = "tab1", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'TotalCases.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'TotalCases'), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "New Case",value = "tab2", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'NewCases.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'NewCases'), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Active Case",value = "tab3", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'ActiveCases.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'ActiveCases'), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Recovered",value = "tab4", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'Recovered.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Recovered'), width = '100%', height = '400')]
                                                                                     ),        
                                                                             dcc.Tab(label = "Death",value = "tab5", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'Death.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Death'), width = '100%', height = '400')]
                                                                                     )        
                                                                             ])
                                                                 ])#Bodycard Body
                                                     ),
                                                     dbc.Card(body = True,children =[
                                                             dbc.Row([
-                                                                    dbc.Col([html.Div(["Total affected States & UTs : " + str(len(mdt.State_1.unique()))])],width = 6),
+                                                                    dbc.Col([html.Div(["Total affected States & UTs : " + str(len(mdt.Name_1.unique()))])],width = 6),
                                                                     dbc.Col([html.Div(["Data last fetched on : " + DT_TM])],width = 6)
                                                                     ])
                                                             
@@ -286,7 +349,7 @@ def serve_layout():
                                                                             dbc.Col([html.Br(),html.H4(html.Div("Select State"))],width=5),
                                                                             dbc.Col([dcc.Dropdown(
                                                                                     id='dd',
-                                                                                    options=[{'label':cl, 'value':cl} for cl in list(sorted(mdt.State_1.unique()))],
+                                                                                    options=[{'label':cl, 'value':cl} for cl in list(sorted(mdt.Name_1.unique()))],
                                                                                     value = 'West Bengal'
                                                                                     ,style={'font-size': "110%"}#'height': '2px', 'width': '100px', 'font-size': "50%",'min-height': '1px' }
                                                                                     )],width=7)
@@ -358,26 +421,26 @@ def serve_layout():
                                                             dbc.CardBody([
                                                                     dcc.Tabs(id = "WMainTab",value = "Wtab1",children=[
                                                                             dcc.Tab(label = "Confirmed Case",value = "Wtab1", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'World_TotalCases.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'TotalCases'), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "New Case",value = "Wtab2", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'World_NewCases.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'NewCases'), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Active Case",value = "Wtab3", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'World_ActiveCases.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'ActiveCases'), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Recovered",value = "Wtab4", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'World_Recovered.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Recovered'), width = '100%', height = '400')]
                                                                                     ),        
                                                                             dcc.Tab(label = "Death",value = "Wtab5", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = open(str(data_path) + 'World_Death.html').read(), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Death'), width = '100%', height = '400')]
                                                                                     )        
                                                                             ])
                                                                 ])#Bodycard Body
                                                     ),
                                                     dbc.Card(body = True,children =[
                                                             dbc.Row([
-                                                                    dbc.Col([html.Div(["Total affected Countries & Territories : " + str(len(Wdt.Country_1.unique()))])],width = 6),
+                                                                    dbc.Col([html.Div(["Total affected Countries & Territories : " + str(len(Wdt.Name_1.unique()))])],width = 6),
                                                                     dbc.Col([html.Div(["Data last fetched on : " + WDT_TM])],width = 6)
                                                                     ])
                                                             
@@ -391,7 +454,7 @@ def serve_layout():
                                                                             dbc.Col([html.Br(),html.H4(html.Div("Select Country"))],width=5),
                                                                             dbc.Col([dcc.Dropdown(
                                                                                     id='Wdd',
-                                                                                    options=[{'label':cl, 'value':cl} for cl in list(sorted(Wdt.Country_1.unique()))],
+                                                                                    options=[{'label':cl, 'value':cl} for cl in list(sorted(Wdt.Name_1.unique()))],
                                                                                     value = 'India'
                                                                                     ,style={'font-size': "110%"}#'height': '2px', 'width': '100px', 'font-size': "50%",'min-height': '1px' }
                                                                                     )],width=7)
@@ -428,7 +491,7 @@ app = dash.Dash(__name__,
                 external_scripts=external_scripts,
                 external_stylesheets=external_stylesheets)
 server = app.server
-app.layout = serve_layout
+app.layout = create_layout
 
 print('Layout complete..')    
 ########### State Plot ################
@@ -438,7 +501,7 @@ print('Layout complete..')
         )
 def stateplot(value):
     dt = pd.DataFrame(sorted(mdt.Date.unique()),columns = ['Date'])
-    dff = mdt.loc[mdt.State_1 == value,['Date','State_1','TotalCases','NewCases','ActiveCases','Recovered','Death']]
+    dff = mdt.loc[mdt.Name_1 == value,['Date','Name_1','TotalCases','NewCases','ActiveCases','Recovered','Death']]
     dff = pd.merge(dt, dff, on='Date', how='left')
     dff = dff.replace(np.nan,0)
     
@@ -465,7 +528,7 @@ def stateplot(value):
         )
 def ButtonmTC(value):
     dff = mdt.loc[mdt.Date == max(mdt.Date),]
-    dff = int(dff.loc[dff.State_1 == value,'TotalCases'])
+    dff = int(dff.loc[dff.Name_1 == value,'TotalCases'])
     return(html.H4('{:,.0f}'.format(dff)))
 
 @app.callback(
@@ -474,7 +537,7 @@ def ButtonmTC(value):
         )
 def ButtonmNC(value):
     dff = mdt.loc[mdt.Date == max(mdt.Date),]
-    dff = int(dff.loc[dff.State_1 == value,'NewCases'])
+    dff = int(dff.loc[dff.Name_1 == value,'NewCases'])
     return(html.H4('{:,.0f}'.format(dff)))
 @app.callback(
             Output('mAC','children'),
@@ -482,7 +545,7 @@ def ButtonmNC(value):
         )
 def ButtonmAC(value):
     dff = mdt.loc[mdt.Date == max(mdt.Date),]
-    dff = int(dff.loc[dff.State_1 == value,'ActiveCases'])
+    dff = int(dff.loc[dff.Name_1 == value,'ActiveCases'])
     return(html.H4('{:,.0f}'.format(dff)))
 @app.callback(
             Output('mRC','children'),
@@ -490,7 +553,7 @@ def ButtonmAC(value):
         )
 def ButtonmRC(value):
     dff = mdt.loc[mdt.Date == max(mdt.Date),]
-    dff = int(dff.loc[dff.State_1 == value,'Recovered'])
+    dff = int(dff.loc[dff.Name_1 == value,'Recovered'])
     return(html.H4('{:,.0f}'.format(dff)))
 @app.callback(
             Output('mDC','children'),
@@ -498,7 +561,7 @@ def ButtonmRC(value):
         )
 def ButtonmDC(value):
     dff = mdt.loc[mdt.Date == max(mdt.Date),]
-    dff = int(dff.loc[dff.State_1 == value,'Death'])
+    dff = int(dff.loc[dff.Name_1 == value,'Death'])
     return(html.H4('{:,.0f}'.format(dff)))
 
 ########### World Plot ################
@@ -508,7 +571,7 @@ def ButtonmDC(value):
         )
 def worldplot(value):
     dt = pd.DataFrame(sorted(Wdt.Date.unique()),columns = ['Date'])
-    dff = Wdt.loc[Wdt.Country_1 == value,['Date','Country_1','TotalCases','NewCases','ActiveCases','Recovered','Death']]
+    dff = Wdt.loc[Wdt.Name_1 == value,['Date','Name_1','TotalCases','NewCases','ActiveCases','Recovered','Death']]
     dff = pd.merge(dt, dff, on='Date', how='left')
     dff = dff.replace(np.nan,0)
     
@@ -535,7 +598,7 @@ def worldplot(value):
         )
 def ButtonWTC(value):
     dff = Wdt.loc[Wdt.Date == max(Wdt.Date),]
-    dff = int(dff.loc[dff.Country_1 == value,'TotalCases'])
+    dff = int(dff.loc[dff.Name_1 == value,'TotalCases'])
     return(html.H4('{:,.0f}'.format(dff)))
 @app.callback(
             Output('WNC','children'),
@@ -543,7 +606,7 @@ def ButtonWTC(value):
         )
 def ButtonWNC(value):
     dff = Wdt.loc[Wdt.Date == max(Wdt.Date),]
-    dff = int(dff.loc[dff.Country_1 == value,'NewCases'])
+    dff = int(dff.loc[dff.Name_1 == value,'NewCases'])
     return(html.H4('{:,.0f}'.format(dff)))
 @app.callback(
             Output('WAC','children'),
@@ -551,7 +614,7 @@ def ButtonWNC(value):
         )
 def ButtonWAC(value):
     dff = Wdt.loc[Wdt.Date == max(Wdt.Date),]
-    dff = int(dff.loc[dff.Country_1 == value,'ActiveCases'])
+    dff = int(dff.loc[dff.Name_1 == value,'ActiveCases'])
     return(html.H4('{:,.0f}'.format(dff)))
 @app.callback(
             Output('WRC','children'),
@@ -559,7 +622,7 @@ def ButtonWAC(value):
         )
 def ButtonWRC(value):
     dff = Wdt.loc[Wdt.Date == max(Wdt.Date),]
-    dff = int(dff.loc[dff.Country_1 == value,'Recovered'])
+    dff = int(dff.loc[dff.Name_1 == value,'Recovered'])
     return(html.H4('{:,.0f}'.format(dff)))    
 @app.callback(
             Output('WDC','children'),
@@ -567,7 +630,7 @@ def ButtonWRC(value):
         )
 def ButtonWDC(value):
     dff = Wdt.loc[Wdt.Date == max(Wdt.Date),]
-    dff = int(dff.loc[dff.Country_1 == value,'Death'])
+    dff = int(dff.loc[dff.Name_1 == value,'Death'])
     return(html.H4('{:,.0f}'.format(dff)))
 
 if __name__ == '__main__':
