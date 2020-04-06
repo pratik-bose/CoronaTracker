@@ -98,7 +98,16 @@ IJ = requests.get(str(data_path)+ 'world-countries.json').content
 JSw = simplejson.loads(IJ)
 
 ########### Map Plot ################
-def CreateMapPlot(data, ll, js, var):
+def CreateMapPlot(data, ll, js, var,id):
+    if id == 1:
+        key = "feature.properties.NAME_1"
+        lcn = [20.5937,78.9629]
+        zm = 4
+    elif id == 2:
+        key = "feature.properties.name"
+        lcn = [20, 0]
+        zm = 1
+        
     df = data[data.Date == max(mdt.Date)]    
     df = pd.merge(df, ll, on='Name_1', how='left')
     
@@ -108,14 +117,14 @@ def CreateMapPlot(data, ll, js, var):
 
     df1 = df[df[var]>0]
     # Initialize the map:
-    m = folium.Map(location=[20.5937,78.9629], tiles="OpenStreetMap", zoom_start=4)
+    m = folium.Map(location=lcn, tiles="OpenStreetMap", zoom_start=zm)
 
     m.choropleth(
      geo_data=js,
      name='choropleth',
      data=df1,
      columns=['Name_2',var],
-     key_on= "feature.properties.NAME_1",
+     key_on= key,
      fill_color='OrRd',
      fill_opacity=0.7,
      line_opacity=0.2,
@@ -316,19 +325,19 @@ def create_layout():
                                                             dbc.CardBody([
                                                                     dcc.Tabs(id = "MainTab",value = "tab1",children=[
                                                                             dcc.Tab(label = "Confirmed Case",value = "tab1", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'TotalCases'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'TotalCases',1), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "New Case",value = "tab2", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'NewCases'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'NewCases',1), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Active Case",value = "tab3", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'ActiveCases'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'ActiveCases',1), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Recovered",value = "tab4", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Recovered'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Recovered',1), width = '100%', height = '400')]
                                                                                     ),        
                                                                             dcc.Tab(label = "Death",value = "tab5", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Death'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Death',1), width = '100%', height = '400')]
                                                                                     )        
                                                                             ])
                                                                 ])#Bodycard Body
@@ -421,19 +430,19 @@ def create_layout():
                                                             dbc.CardBody([
                                                                     dcc.Tabs(id = "WMainTab",value = "Wtab1",children=[
                                                                             dcc.Tab(label = "Confirmed Case",value = "Wtab1", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'TotalCases'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'TotalCases',2), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "New Case",value = "Wtab2", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'NewCases'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'NewCases',2), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Active Case",value = "Wtab3", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'ActiveCases'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'ActiveCases',2), width = '100%', height = '400')]
                                                                                     ),
                                                                             dcc.Tab(label = "Recovered",value = "Wtab4", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Recovered'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Recovered',2), width = '100%', height = '400')]
                                                                                     ),        
                                                                             dcc.Tab(label = "Death",value = "Wtab5", style=tab_style, selected_style=tab_selected_style,
-                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Death'), width = '100%', height = '400')]
+                                                                                    children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Death',2), width = '100%', height = '400')]
                                                                                     )        
                                                                             ])
                                                                 ])#Bodycard Body
@@ -493,7 +502,7 @@ app = dash.Dash(__name__,
 server = app.server
 app.layout = create_layout
 
-print('Layout complete..')    
+#print('Layout complete..')    
 ########### State Plot ################
 @app.callback(
             Output('stateplot','children'),
@@ -635,7 +644,6 @@ def ButtonWDC(value):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-    
-'''
-use dbc.row and dbc.col instead
-'''
+    #CreateMapPlot()
+    #totalplot()
+    #create_layout()
