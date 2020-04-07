@@ -87,7 +87,7 @@ tab_selected_style = {
 s = requests.get(str(data_path)+ 'GeoData.csv').content
 LLi = pd.read_csv(io.StringIO(s.decode('utf-8')))
 #Import GeoJson file
-IJ = requests.get(str(data_path)+ 'Ind_geo.txt').content
+IJ = requests.get(str(data_path)+ 'indian_states2.geojson').content
 JSi = simplejson.loads(IJ)
 #Load World data
 #Import Lat Long
@@ -100,7 +100,7 @@ JSw = simplejson.loads(IJ)
 ########### Map Plot ################
 def CreateMapPlot(data, ll, js, var,id):
     if id == 1:
-        key = "feature.properties.NAME_1"
+        key = "feature.properties.st_nm"
         lcn = [20.5937,78.9629]
         zm = 4
     elif id == 2:
