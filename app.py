@@ -164,7 +164,7 @@ def totalplot(mdt,id):
                                        'Death':sum
                                    })
     
-    dt = pd.DataFrame(sorted(mdt.Date.unique()),columns = ['Date'])
+    dt = pd.DataFrame(mdt.Date.unique(),columns = ['Date'])
     dff = pd.merge(dt, dff, on='Date', how='left')
     dff = dff.replace(np.nan,0)
     
@@ -515,7 +515,7 @@ app.layout = create_layout
             [Input('dd','value')]
         )
 def stateplot(value):
-    dt = pd.DataFrame(sorted(mdt.Date.unique()),columns = ['Date'])
+    dt = pd.DataFrame(mdt.Date.unique(),columns = ['Date'])
     dff = mdt.loc[mdt.Name_1 == value,['Date','Name_1','TotalCases','NewCases','ActiveCases','Recovered','Death']]
     dff = pd.merge(dt, dff, on='Date', how='left')
     dff = dff.replace(np.nan,0)
@@ -585,7 +585,7 @@ def ButtonmDC(value):
             [Input('Wdd','value')]
         )
 def worldplot(value):
-    dt = pd.DataFrame(sorted(Wdt.Date.unique()),columns = ['Date'])
+    dt = pd.DataFrame(Wdt.Date.unique(),columns = ['Date'])
     dff = Wdt.loc[Wdt.Name_1 == value,['Date','Name_1','TotalCases','NewCases','ActiveCases','Recovered','Death']]
     dff = pd.merge(dt, dff, on='Date', how='left')
     dff = dff.replace(np.nan,0)
