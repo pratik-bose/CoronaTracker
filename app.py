@@ -30,6 +30,7 @@ import simplejson
 import requests
 import folium
 from folium.plugins import MarkerCluster
+import json
 
 #import time
 #from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
@@ -87,8 +88,13 @@ tab_selected_style = {
 s = requests.get(str(data_path)+ 'GeoData.csv').content
 LLi = pd.read_csv(io.StringIO(s.decode('utf-8')))
 #Import GeoJson file
-IJ = requests.get(str(data_path)+ 'indian_states2.geojson').content
+IJ = requests.get(str(data_path)+ 'indian_states2.json').content
 JSi = simplejson.loads(IJ)
+'''
+with open(str(data_path)+ 'indian_states2.json') as f:
+    JSi = json.load(f)
+'''
+
 #Load World data
 #Import Lat Long
 s = requests.get(str(data_path)+ 'CountryLL.csv').content
@@ -644,6 +650,6 @@ def ButtonWDC(value):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-    #CreateMapPlot()
-    #totalplot()
-    #create_layout()
+    CreateMapPlot()
+    totalplot()
+    create_layout()
