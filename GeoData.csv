@@ -1,19 +1,19 @@
 Name_1,Name_2,Latitude,Longitude
-Andaman and Nicobar Islands,Andaman and Nicobar,11.66702557,92.73598262
+Andaman and Nicobar Islands,Andaman & Nicobar Island,11.66702557,92.73598262
 Andhra Pradesh,Andhra Pradesh,15.9129,79.74
-Arunachal Pradesh,Arunachal Pradesh,27.10039878,93.61660071
+Arunachal Pradesh,Arunanchal Pradesh,27.10039878,93.61660071
 Assam,Assam,26.7499809,94.21666744
 Bihar,Bihar,25.612677,85.158875
 Chandigarh,Chandigarh,30.71999697,76.78000565
 Chhattisgarh,Chhattisgarh,22.09042035,82.15998734
-Dadra and Nagar Haveli,Dadra and Nagar Haveli,20.26657819,73.0166178
-Daman and Diu,Daman and Diu,20.397373,72.832802
-Delhi,Delhi,28.6699929,77.23000403
+Dadra and Nagar Haveli,Dadara & Nagar Havelli,20.26657819,73.0166178
+Daman and Diu,Daman & Diu,20.397373,72.832802
+Delhi,NCT of Delhi,28.6699929,77.23000403
 Goa,Goa,15.491997,73.81800065
 Gujarat,Gujarat,23.033863,72.585022
 Haryana,Haryana,29.316668,76.316666
 Himachal Pradesh,Himachal Pradesh,31.10002545,77.16659704
-Jammu and Kashmir,Jammu and Kashmir,34.083656,74.797371
+Jammu and Kashmir,Jammu & Kashmir,34.083656,74.797371
 Jharkhand,Jharkhand,23.344101,85.309563
 Karnataka,Karnataka,14.464103,75.921661
 Kerala,Kerala,9.939093,76.270523
@@ -24,7 +24,7 @@ Manipur,Manipur,24.79997072,93.95001705
 Meghalaya,Meghalaya,25.57049217,91.8800142
 Mizoram,Mizoram,23.71039899,92.72001461
 Nagaland,Nagaland,25.6669979,94.11657019
-Odisha,Orissa,20.462521,85.882988
+Odisha,Odisha,20.462521,85.882988
 Puducherry,Puducherry,11.93499371,79.83000037
 Punjab,Punjab,31.326015,75.57618
 Rajasthan,Rajasthan,26.44999921,74.63998124
@@ -33,6 +33,6 @@ Tamil Nadu,Tamil Nadu,9.939093,78.121719
 Telengana,Telangana,18.1124,79.0193
 Tripura,Tripura,23.83540428,91.27999914
 Uttar Pradesh,Uttar Pradesh,26.85,80.949997
-Uttarakhand,Uttaranchal,30.316496,78.032188
+Uttarakhand,Uttarakhand,30.316496,78.032188
 West Bengal,West Bengal,22.58039044,88.32994665
 Ladakh,Ladakh,34.209515,77.615112
