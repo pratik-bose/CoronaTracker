@@ -351,7 +351,7 @@ def create_layout():
                                                     dbc.Card(body = True,children =[
                                                             dbc.Row([
                                                                     dbc.Col([html.Div(["Total affected States & UTs : " + str(len(mdt.Name_1.unique()))])],width = 6),
-                                                                    dbc.Col([html.Div(["Data last fetched on : " + DT_TM])],width = 6)
+                                                                    dbc.Col([html.Div(["Data last fetched on : " + DT_TM + " IST"])],width = 6)
                                                                     ])
                                                             
                                                             ],style={'backgroundColor': colors['background'],'textAlign': 'center','color': colors['text']})                        
@@ -456,7 +456,7 @@ def create_layout():
                                                     dbc.Card(body = True,children =[
                                                             dbc.Row([
                                                                     dbc.Col([html.Div(["Total affected Countries & Territories : " + str(len(Wdt.Name_1.unique()))])],width = 6),
-                                                                    dbc.Col([html.Div(["Data last fetched on : " + WDT_TM])],width = 6)
+                                                                    dbc.Col([html.Div(["Data last fetched on : " + WDT_TM + " IST"])],width = 6)
                                                                     ])
                                                             
                                                             ],style={'backgroundColor': colors['background'],'textAlign': 'center','color': colors['text']})                        
@@ -484,7 +484,7 @@ def create_layout():
                                                                                       html.Br(),html.Br(),html.Br(),dbc.Button(id = "WRC", color="success",style={'width': '100%'}),html.Br(),
                                                                                       html.Br(),html.Br(),html.Br(),dbc.Button(id = "WDC", color="danger",style={'width': '100%'}),html.Br(),
                                                                                      ],width = 4),
-                                                                             dbc.Col([html.Div(id = 'worldplot',style={'oveflowY':'scroll','width': '100%','height':height})],width = 8)
+                                                                             dbc.Col([html.Div(id = 'worldplot',style={'oveflowY':'scroll','width': 'width','height':height})],width = 8)
                                                                              ],style={'textAlign': 'center','color': colors['text']}
                                                                      )
                                                                     ])#Sidebarcard Body
