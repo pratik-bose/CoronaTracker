@@ -484,7 +484,7 @@ def create_layout():
                                                                                       html.Br(),html.Br(),html.Br(),dbc.Button(id = "WRC", color="success",style={'width': '100%'}),html.Br(),
                                                                                       html.Br(),html.Br(),html.Br(),dbc.Button(id = "WDC", color="danger",style={'width': '100%'}),html.Br(),
                                                                                      ],width = 4),
-                                                                             dbc.Col([html.Div(id = 'worldplot',style={'oveflowY':'scroll','width': width,'height':height})],width = 8)
+                                                                             dbc.Col([html.Div(id = 'worldplot',style={'oveflowY':'scroll','width': '100%','height':height})],width = 8)
                                                                              ],style={'textAlign': 'center','color': colors['text']}
                                                                      )
                                                                     ])#Sidebarcard Body
