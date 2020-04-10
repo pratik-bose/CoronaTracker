@@ -30,7 +30,8 @@ import simplejson
 import requests
 import folium
 from folium.plugins import MarkerCluster
-import json
+#import json
+import dash_table
 
 #import time
 #from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
@@ -195,6 +196,18 @@ def create_layout():
     Wdt = pd.read_csv(io.StringIO(s.decode('utf-8')))
     print('Data load complete..')
     
+    mdf = mdt[mdt.Date==max(mdt.Date)]
+    mdf = mdf.sort_values(by=['TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"], ascending=False)
+    mdf = mdf.assign(slno = range(1,len(mdf)+1))
+    mdf = mdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"]]
+    mdf.columns = ['Sl.No','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths"]
+
+    wdf = Wdt[Wdt.Date==max(mdt.Date)]
+    wdf = wdf.sort_values(by=['TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"], ascending=False)
+    wdf = wdf.assign(slno = range(1,len(wdf)+1))
+    wdf = wdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"]]
+    wdf.columns = ['Sl.No','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths"]
+        
     TC1 = sum(mdt.loc[mdt.Date==max(mdt.Date),'TotalCases'])
     TC = '{:,.0f}'.format(TC1)
     NC = '{:,.0f}'.format(sum(mdt.loc[mdt.Date==max(mdt.Date),'NewCases']))
@@ -346,8 +359,54 @@ def create_layout():
                                                                                     children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Death',1), width = '100%', height = '400')]
                                                                                     )        
                                                                             ])
-                                                                ])#Bodycard Body
-                                                    ),
+                                                                ])
+                                                    ),#Bodycard Body
+                                                    dbc.Card( body = True, children = [
+                                                        dash_table.DataTable(
+                                                                    #id='table',
+                                                                    columns=[{"name": i, "id": i} for i in mdf.columns],
+                                                                    data=mdf.to_dict('records'),
+                                                                    style_cell={'textAlign': 'Center','fontSize':12, 'width':'70px'}, 
+                                                                    style_table={'maxHeight': '300px'},
+                                                                    fixed_rows={ 'headers': True, 'data': 0 }, 
+                                                                    #fixed_columns={ 'headers': True, 'data': 1 },
+                                                                    style_as_list_view=True,
+                                                                    style_cell_conditional=[
+                                                                        {'if': {'column_id': 'Name'},
+                                                                            'backgroundColor': '#6c757d',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Confirmed'},
+                                                                            'backgroundColor': '#007bff',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'New'},
+                                                                            'backgroundColor': '#ffc107',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Active'},
+                                                                            'backgroundColor': '#17a2b8',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Recovered'},
+                                                                            'backgroundColor': '#28a745',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Deaths'},
+                                                                            'backgroundColor': '#dc3545',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        }
+                                                                        
+                                                                      ]
+                                                                    )
+                                                                 
+                                                                 ],style={'oveflowY':'scroll'}), #Table Card          
                                                     dbc.Card(body = True,children =[
                                                             dbc.Row([
                                                                     dbc.Col([html.Div(["Total affected States & UTs : " + str(len(mdt.Name_1.unique()))])],width = 6),
@@ -451,8 +510,53 @@ def create_layout():
                                                                                     children = [html.Iframe(srcDoc = CreateMapPlot(Wdt, LLw, JSw, 'Death',2), width = '100%', height = '400')]
                                                                                     )        
                                                                             ])
-                                                                ])#Bodycard Body
-                                                    ),
+                                                                ])
+                                                    ),#Bodycard Body
+                                                    dbc.Card( body = True, children = [
+                                                                 dash_table.DataTable(
+                                                                    #id='table',
+                                                                    columns=[{"name": i, "id": i} for i in wdf.columns],
+                                                                    data=wdf.to_dict('records'),
+                                                                    style_cell={'textAlign': 'Center','width': '70px','fontSize':12},
+                                                                    style_table={'maxHeight': '300px'},
+                                                                    fixed_rows={ 'headers': True, 'data': 0 },
+                                                                    style_as_list_view=True,
+                                                                    style_cell_conditional=[
+                                                                        {'if': {'column_id': 'Name'},
+                                                                            'backgroundColor': '#6c757d',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Confirmed'},
+                                                                            'backgroundColor': '#007bff',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'New'},
+                                                                            'backgroundColor': '#ffc107',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Active'},
+                                                                            'backgroundColor': '#17a2b8',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Recovered'},
+                                                                            'backgroundColor': '#28a745',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        },
+                                                                        {'if': {'column_id': 'Deaths'},
+                                                                            'backgroundColor': '#dc3545',
+                                                                            'color': 'white',
+                                                                            'fontWeight': 'bold'
+                                                                        }
+                                                                        
+                                                                      ]
+                                                                    )
+                                                                 
+                                                                 ]), #Table Card          
                                                     dbc.Card(body = True,children =[
                                                             dbc.Row([
                                                                     dbc.Col([html.Div(["Total affected Countries & Territories : " + str(len(Wdt.Name_1.unique()))])],width = 6),
