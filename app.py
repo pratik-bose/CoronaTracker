@@ -199,14 +199,14 @@ def create_layout():
     mdf = mdt[mdt.Date==max(mdt.Date)]
     mdf = mdf.sort_values(by=['TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"], ascending=False)
     mdf = mdf.assign(slno = range(1,len(mdf)+1))
-    mdf = mdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"]]
-    mdf.columns = ['Sl.No','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths"]
+    mdf = mdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death","NoNewCasesSince"]]
+    mdf.columns = ['Sl.No','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths",'No Cases Since']
 
     wdf = Wdt[Wdt.Date==max(mdt.Date)]
     wdf = wdf.sort_values(by=['TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"], ascending=False)
     wdf = wdf.assign(slno = range(1,len(wdf)+1))
-    wdf = wdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"]]
-    wdf.columns = ['Sl.No','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths"]
+    wdf = wdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death","NoNewCasesSince"]]
+    wdf.columns = ['Sl.No','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths","No Cases Since"]
         
     TC1 = sum(mdt.loc[mdt.Date==max(mdt.Date),'TotalCases'])
     TC = '{:,.0f}'.format(TC1)
@@ -366,7 +366,7 @@ def create_layout():
                                                                     #id='table',
                                                                     columns=[{"name": i, "id": i} for i in mdf.columns],
                                                                     data=mdf.to_dict('records'),
-                                                                    style_cell={'textAlign': 'Center','fontSize':12, 'width':'70px'}, 
+                                                                    style_cell={'textAlign': 'Center','fontSize':12, 'width':'60px'}, 
                                                                     style_table={'maxHeight': '300px'},
                                                                     fixed_rows={ 'headers': True, 'data': 0 }, 
                                                                     #fixed_columns={ 'headers': True, 'data': 1 },
@@ -517,7 +517,7 @@ def create_layout():
                                                                     #id='table',
                                                                     columns=[{"name": i, "id": i} for i in wdf.columns],
                                                                     data=wdf.to_dict('records'),
-                                                                    style_cell={'textAlign': 'Center','width': '70px','fontSize':12},
+                                                                    style_cell={'textAlign': 'Center','width': '60px','fontSize':12},
                                                                     style_table={'maxHeight': '300px'},
                                                                     fixed_rows={ 'headers': True, 'data': 0 },
                                                                     style_as_list_view=True,
