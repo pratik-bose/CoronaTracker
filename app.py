@@ -242,7 +242,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.3.01"
+                                    "V2.3.02"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
@@ -302,7 +302,7 @@ def create_layout(data_path):
                                 dbc.Col(width = 1),
                                 dbc.Col(width = 10,children =[
                                     dbc.Tabs(id = "mMainTab",children=[
-                                        dbc.Tab(label = "Confirmed Case",
+                                        dbc.Tab(label = "Confirmed Case",tabClassName="ml-auto",
                                                 children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'TotalCases',1), width = '100%', height = '370')]
                                                 ),
                                         dbc.Tab(label = "New Case",
@@ -317,7 +317,7 @@ def create_layout(data_path):
                                         dbc.Tab(label = "Death",
                                                 children = [html.Iframe(srcDoc = CreateMapPlot(mdt, LLi, JSi, 'Death',1), width = '100%', height = '370')]
                                                 ),
-                                        dbc.Tab(label = "Data",children = [
+                                        dbc.Tab(label = "Data",tabClassName="mr-auto",children = [
                                             dbc.Card(body = True, style={'height':'100%', 'width':'370'}, children=[
                                                 dash_table.DataTable(
                                                         #id='table',
