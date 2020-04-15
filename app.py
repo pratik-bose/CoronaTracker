@@ -128,10 +128,10 @@ def generateplot(value,col,fdf,id):
         
     x = fdf[col]
     fig = go.Figure()
-    annotations=[]
+    annotations=[] 
     for i in [nm,value]:
         fig.add_trace(go.Scatter(x=x.index, y=x[i], name=i,opacity= 1 if i == value else 1 if i == nm else 0.3,
-                             line = dict(color= clr if i == value else "black" if i == nm else 'grey', width=4)))
+                             line = dict(color= clr if i == value else "black" if i == nm else 'grey')))
         annotations.append(dict(xref='paper', x=1, y=x[i][len(x)-1],
                              xanchor='left', yanchor='middle',
                              text= i,
@@ -242,7 +242,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.3.03"
+                                    "V2.3.13"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
@@ -262,7 +262,7 @@ def create_layout(data_path):
             #Main Body
         ,html.Div([
             #Main Tab Item
-            dbc.Tabs([
+            dbc.Tabs(style ={'fontWeight': 'bold','font-size': "160%"},children=[
                 # India Tab
                 dbc.Tab(label = "India",  tabClassName="ml-auto",children=[
                 ###############################
@@ -326,7 +326,7 @@ def create_layout(data_path):
                                                         style_cell={'textAlign': 'Center','width': '80px','fontSize':12},
                                                         style_table={'maxHeight': '370px','overflowY':'scroll'},
                                                         fixed_rows={ 'headers': True, 'data': 0 },
-                                                        style_as_list_view=True,
+                                         #               style_as_list_view=True,
                                                         style_cell_conditional=[
                                                             {'if': {'column_id': "Sl.No"},
                                                                 'backgroundColor': '#6c757d',
@@ -344,17 +344,17 @@ def create_layout(data_path):
                                                                 'fontWeight': 'bold'
                                                             } ,
                                                             {'if': {'column_id': 'Confirmed'},
-                                                                'backgroundColor': '#007bff',
+                                                                'backgroundColor': '#01A9DB',
                                                                 'color': 'white',
                                                                 'fontWeight': 'bold'
                                                             },
                                                             {'if': {'column_id': 'New'},
-                                                                'backgroundColor': '#ffc107',
+                                                                'backgroundColor': '#FF8000',
                                                                 'color': 'white',
                                                                 'fontWeight': 'bold'
                                                             },
                                                             {'if': {'column_id': 'Active'},
-                                                                'backgroundColor': '#17a2b8',
+                                                                'backgroundColor': '#9F81F7',
                                                                 'color': 'white',
                                                                 'fontWeight': 'bold'
                                                             },
@@ -513,7 +513,7 @@ def create_layout(data_path):
                                                         style_cell={'textAlign': 'Center','width': '80px','fontSize':12},
                                                         style_table={'maxHeight': '370px','overflowY':'scroll'},
                                                         fixed_rows={ 'headers': True, 'data': 0 },
-                                                        style_as_list_view=True,
+                                          #              style_as_list_view=True,
                                                         style_cell_conditional=[
                                                             {'if': {'column_id': "Sl.No"},
                                                                 'backgroundColor': '#6c757d',
@@ -531,17 +531,17 @@ def create_layout(data_path):
                                                                 'fontWeight': 'bold'
                                                             } ,
                                                             {'if': {'column_id': 'Confirmed'},
-                                                                'backgroundColor': '#007bff',
+                                                                'backgroundColor': '#01A9DB',
                                                                 'color': 'white',
                                                                 'fontWeight': 'bold'
                                                             },
                                                             {'if': {'column_id': 'New'},
-                                                                'backgroundColor': '#ffc107',
+                                                                'backgroundColor': '#FF8000',
                                                                 'color': 'white',
                                                                 'fontWeight': 'bold'
                                                             },
                                                             {'if': {'column_id': 'Active'},
-                                                                'backgroundColor': '#17a2b8',
+                                                                'backgroundColor': '#9F81F7',
                                                                 'color': 'white',
                                                                 'fontWeight': 'bold'
                                                             },
