@@ -242,7 +242,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.3.15"
+                                    "V2.3.16"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
@@ -253,16 +253,15 @@ def create_layout(data_path):
                             right=True
                             ),
                     ],
-                    brand="Coronavirus COVID-19 Cases",
+                    brand= "Coronavirus COVID-19 Cases",
                     color="secondary",
                     dark=True,
                     fluid = True
-                    
-                )#Navigation Bar
+            )#Navigation Bar
             #Main Body
         ,html.Div([
             #Main Tab Item
-            dbc.Tabs(style ={'fontWeight': 'bold','font-size': "160%"},children=[
+            dbc.Tabs(style ={'fontWeight': 'bold','font-size': "150%"},children=[
                 # India Tab
                 dbc.Tab(label = "India",  tabClassName="ml-auto",children=[
                 ###############################
@@ -297,7 +296,7 @@ def create_layout(data_path):
                             ,style={'textAlign': 'center','fontWeight': 'bold','font-size': "160%", 'color':'white'}
                             )#Total Level cards
                         # Map body
-                        ,dbc.Card(body = True, color = 'secondary', children = [
+                        ,dbc.Card(body = True, children = [
                             dbc.Row([
                                 dbc.Col(width = 1),
                                 dbc.Col(width = 10,children =[
@@ -484,7 +483,7 @@ def create_layout(data_path):
                             ,style={'textAlign': 'center','fontWeight': 'bold','font-size': "160%", 'color':'white'}
                             )#Total Level cards
                         # Map body
-                        ,dbc.Card(body = True, color = 'secondary', children = [
+                        ,dbc.Card(body = True, children = [
                             dbc.Row([
                                 dbc.Col(width = 1),
                                 dbc.Col(width = 10,children =[
