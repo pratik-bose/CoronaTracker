@@ -189,7 +189,7 @@ def create_layout(data_path):
     DT = sum(mdt.loc[mdt.Date==max(mdt.Date),'Death'])
     DT = '{:,.0f}'.format(DT)+" ("+str(round((DT/TC1)*100,2))+"%)"
     TM = max(mdt.loc[mdt.Date==max(mdt.Date),'Time'])
-    DT_TM = str(max(mdt.Date)+':'+TM)
+    DT_TM = str(max(mdt.Date)+' '+TM)
     
     WTC1 = sum(Wdt.loc[Wdt.Date==max(Wdt.Date),'TotalCases'])
     WTC = '{:,.0f}'.format(WTC1)
@@ -201,7 +201,7 @@ def create_layout(data_path):
     WDT = sum(Wdt.loc[Wdt.Date==max(Wdt.Date),'Death'])
     WDT = '{:,.0f}'.format(WDT)+" ("+str(round((WDT/WTC1)*100,2))+"%)"
     WTM = max(Wdt.loc[Wdt.Date==max(Wdt.Date),'Time'])
-    WDT_TM = str(max(Wdt.Date)+':'+WTM)
+    WDT_TM = str(max(Wdt.Date)+' '+WTM)
 
 
 #### Define Layout ####
@@ -242,7 +242,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.3.16"
+                                    "V2.3.17"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
