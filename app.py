@@ -139,7 +139,7 @@ def generateplot(value,col,fdf,id):
                              font=dict(color = clr if i == value else "black" if i == nm else 'grey'),
                              showarrow=False))
         
-    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=0,pad=2),height=150)
+    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=10,l=10,pad=2),height=150)
     return(fig)
 
 
@@ -242,7 +242,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.3.13"
+                                    "V2.3.15"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
@@ -426,7 +426,7 @@ def create_layout(data_path):
                             ,style={'textAlign': 'center','fontWeight': 'bold','font-size': "100%", 'color':'white'}
                             )#Granular Level cards
                         # Line plot body
-                        ,dbc.Card(body = True,style = {'textAlign':'center','fontWeight': 'bold','height':600 },children=[
+                        ,dbc.Card(body = True,style = {'textAlign':'center','color':'white' },children=[
                             dbc.Row([
                                 dbc.Col([html.P(id="mNN", className="card-title"),
                                          dcc.Graph(id = 'mDD',config = {'displayModeBar': False})]),
@@ -613,7 +613,7 @@ def create_layout(data_path):
                             ,style={'textAlign': 'center','fontWeight': 'bold','font-size': "100%", 'color':'white'}
                             )#Granular Level cards
                         # Line plot body
-                        ,dbc.Card(body = True,style = {'textAlign':'center','fontWeight': 'bold','height':600 },children=[
+                        ,dbc.Card(body = True,style = {'textAlign':'center','color':'white'},children=[
                             dbc.Row([
                                 dbc.Col([html.P(id="wNN", className="card-title"),
                                          dcc.Graph(id = 'wDD',config = {'displayModeBar': False})]),
@@ -723,7 +723,7 @@ def state_chart_plots(value):
                              font=dict(color = clr[i]),
                              showarrow=False))
     
-    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=0,pad=2),height=150)
+    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=10,l=10,pad=2),height=150)
     print("State plot completed..")
     return TC, NC, AC, RC, DC, fig, value
 @app.callback(
@@ -793,7 +793,12 @@ def country_chart_plots(value):
                              font=dict(color = clr[i]),
                              showarrow=False))
         
-    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=0,pad=2),height=150)
+    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=10,l=10,pad=2),height=150
+                      ,
+                      #paper_bgcolor='rgba(255,255,255,0.5)',
+                      #plot_bgcolor='rgba(0,0,0,0)',
+                      #font = dict(color = "#fafafa")
+                      )
     print("Country plot completed..")
     return TC, NC, AC, RC, DC, fig, value
 
