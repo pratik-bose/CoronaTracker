@@ -11,7 +11,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import pandas as pd
-#from plotly.subplots import make_subplots
+from plotly.subplots import make_subplots
 from dash.dependencies import Input, Output
 import numpy as np
 import io
@@ -121,25 +121,35 @@ def generateplot(value,col,fdf,id):
         clr = 'purple'
     elif col == "Recovered":
         #title = "Total Recovered"
-        clr = 'lightgreen'
+        clr = 'green'
     elif col == "Death":
         #title = "Total Deaths"
         clr = 'red'
         
     x = fdf[col]
-    fig = go.Figure()
+    #fig = go.Figure()
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
     annotations=[] 
     for i in [nm,value]:
-        fig.add_trace(go.Scatter(x=x.index, y=x[i], name=i,opacity= 1 if i == value else 1 if i == nm else 0.3,
-                             line = dict(color= clr if i == value else "black" if i == nm else 'grey')))
-        annotations.append(dict(xref='paper', x=1, y=x[i][len(x)-1],
-                             xanchor='left', yanchor='middle',
-                             text= i,
-                             opacity= 1 if i == value else 1 if i == nm else 0.3,
-                             font=dict(color = clr if i == value else "black" if i == nm else 'grey'),
-                             showarrow=False))
+        fig.add_trace(go.Scatter(x=x.index,y= x[i], name=i,opacity= 1 if i == value else 1 if i == nm else 0.3,
+                                 line = dict(color= clr if i == value else "black" if i == nm else 'grey'))
+                      ,secondary_y=True if i == value else False
+                      )
+        annotations.append(dict(xref='paper', x=0.8 if i == value else 0.2, y= max(x[nm])+100,
+                         xanchor='right' if i == value else 'left', yanchor='middle',
+                         text= i + ' -->' if i == value else '<-- ' +i,
+                         opacity= 1 if i == value else 1 if i == nm else 0.3,
+                         font=dict(color = clr if i == value else "black" if i == nm else 'grey'),
+                         showarrow=False))
         
-    fig.update_layout(showlegend=False,annotations=annotations,margin=dict(t=10,b=10,l=10,pad=2),height=150)
+    
+    # Set y-axes titles
+    #fig.update_yaxes(title_text=nm, secondary_y=False)
+    #fig.update_yaxes(title_text= 'State' if id == 1 else 'Country', secondary_y=True)    
+    fig.update_layout(annotations=annotations,showlegend=False
+                      ,margin=dict(t=10,b=10,l=10,r=10,pad=2),height=150
+                      #,legend_orientation="h",legend=dict(x=.4, y=-0.35)
+                      )
     return(fig)
 
 
@@ -242,7 +252,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.3.17"
+                                    "V2.4.16"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
@@ -710,7 +720,7 @@ def state_chart_plots(value):
     df.columns = ['Date','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths"]
     
     fig = go.Figure()
-    clr = ['blue', 'orange', 'purple', 'lightgreen','red']
+    clr = ['blue', 'orange', 'purple', 'green','red']
     vars = ['Confirmed', 'New',"Active", "Recovered", "Deaths"]
     annotations = []
     for i in range(0,5):
@@ -780,7 +790,7 @@ def country_chart_plots(value):
     df.columns = ['Date','Name', 'Confirmed', 'New',"Active", "Recovered", "Deaths"]
     
     fig = go.Figure()
-    clr = ['blue', 'orange', 'purple', 'lightgreen','red']
+    clr = ['blue', 'orange', 'purple', 'green','red']
     vars = ['Confirmed', 'New',"Active", "Recovered", "Deaths"]
     annotations = []
     for i in range(0,5):
