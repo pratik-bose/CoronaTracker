@@ -228,7 +228,7 @@ def create_layout(data_path):
                                 ". Data last fetched on : " + DT_TM + " IST",className="text-muted px-4 mt-4"),
                                 dbc.DropdownMenuItem("2) Worldometer", href="https://www.worldometers.info/"),
                                 html.P("Total affected Countries & Territories : " + str(len(Wdt.Name_1.unique())) +
-                                ". Data last fetched on : " + WDT_TM + " IST",className="text-muted px-4 mt-4"),
+                                ". Data last fetched on : " + WDT_TM + " EST",className="text-muted px-4 mt-4"),
                                 dbc.DropdownMenuItem(divider=True),
                                 dbc.Card(body = True, children = [
                                     dcc.Markdown([
@@ -252,7 +252,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.4.16"
+                                    "V2.4.17"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
