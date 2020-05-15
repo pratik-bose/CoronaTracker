@@ -66,7 +66,7 @@ def CreateMapPlot(data, ll, js, var,id):
         lcn = [20, 0]
         zm = 1
         
-    df = data[data.Date == max(mdt.Date)]    
+    df = data[data.Date == max(data.Date)]    
     df = pd.merge(df, ll, on='Name_1', how='left')
     
     for i in range(0,len(df)):
@@ -178,7 +178,7 @@ def create_layout(data_path):
     mdf['Recovered'] = mdf.apply(lambda x: "{:,}".format(x['Recovered']), axis=1)
     mdf['Deaths'] = mdf.apply(lambda x: "{:,}".format(x['Deaths']), axis=1)
     
-    wdf = Wdt[Wdt.Date==max(mdt.Date)]
+    wdf = Wdt[Wdt.Date==max(Wdt.Date)]
     wdf = wdf.sort_values(by=['TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death"], ascending=False)
     wdf = wdf.assign(slno = range(1,len(wdf)+1))
     wdf = wdf[['slno','Name_1', 'TotalCases', 'NewCases',"ActiveCases", "Recovered", "Death","NoNewCasesSince"]]
@@ -252,7 +252,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.4.17"
+                                    "V2.4.19"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
