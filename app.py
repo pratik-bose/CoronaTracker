@@ -65,7 +65,18 @@ def CreateMapPlot(data, ll, js, var,id):
         key = "feature.properties.name"
         lcn = [20, 0]
         zm = 1
-        
+    
+    if var == 'TotalCases':
+        clr = 'Blues'
+    elif var == 'NewCases':
+        clr = 'Oranges'
+    elif var == 'ActiveCases':
+        clr = 'Purples'
+    elif var == "Recovered":
+        clr = 'Greens'
+    elif var == "Death":
+        clr = 'Reds'
+    
     df = data[data.Date == max(data.Date)]    
     df = pd.merge(df, ll, on='Name_1', how='left')
     
@@ -83,7 +94,7 @@ def CreateMapPlot(data, ll, js, var,id):
      data=df1,
      columns=['Name_2',var],
      key_on= key,
-     fill_color='OrRd',
+     fill_color=clr,
      fill_opacity=0.7,
      line_opacity=0.2,
      legend_name=var,
@@ -252,7 +263,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.4.19"
+                                    "V2.5.20"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
