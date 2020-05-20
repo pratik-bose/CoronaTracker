@@ -263,7 +263,7 @@ def create_layout(data_path):
                                 ),
                                 dbc.DropdownMenuItem(divider=True),
                                 html.P(
-                                    "V2.5.24"
+                                    "V2.5.25"
                                     ,className="text-muted px-4 mt-4",
                                 )
                            ],
